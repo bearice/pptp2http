@@ -1,7 +1,8 @@
-FROM docker.jimubox.com/base
+FROM ubuntu:trusty
 MAINTAINER bearice@icybear.net
 
-RUN apt-get update && \
+RUN echo "deb http://archive.ubuntu.com/ubuntu/ trusty-backports main restricted" >> /etc/apt/sources.list && \
+    apt-get update && \
     apt-get install -y pptp-linux squid3 && \
     apt-get install -t trusty-backports jq && \ 
     ln -sf /bin/true /sbin/modprobe && \
