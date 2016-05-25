@@ -1,0 +1,39 @@
+acl localhost src 127.0.0.1/32
+acl localnet  src 127.0.0.0/8
+acl localnet  src 10.0.0.0/8
+acl localnet  src 100.64.0.0/10
+acl localnet  src 172.16.0.0/12
+acl localnet  src 192.168.0.0/16
+
+#acl to_google dstdomain .google.com
+#acl to_google dstdomain .googleusercontent.com
+
+acl SSL_ports port 443
+acl CONNECT method CONNECT
+
+http_access allow manager localhost
+http_access deny manager
+
+http_access allow localnet
+http_access deny all
+
+http_port !HOST_IP!:3128
+
+request_header_access X-Forwarded-For deny all
+dns_v4_first on
+dns_nameservers !DNS_IP!
+tcp_outgoing_address !PPP_IP! all
+#clientside_mark 0x14 all
+
+hierarchy_stoplist cgi-bin ?
+
+logformat combined %>a %ui %un [%tl] "%rm %ru HTTP/%rv" %>Hs %<st "%{Referer}>h" "%{User-Agent}>h" %Ss:%Sh
+access_log /var/log/squid3/access.log combined
+cache_log /var/log/squid3/cache.log
+
+coredump_dir /tmp
+cache_dir null /tmp
+refresh_pattern ^ftp:             1440    20%     10080
+refresh_pattern ^gopher:          1440    0%      1440
+refresh_pattern -i (/cgi-bin/|\?) 0       0%      0
+refresh_pattern .                 0       20%     4320
