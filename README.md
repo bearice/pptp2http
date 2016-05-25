@@ -18,7 +18,7 @@ docker run -d \
   --cap-add=net_admin \
   --name pptp1 \
   -v $HOME/pptp_status:/data \
-  pptp2http \
+  bearice/pptp2http \
   /init.sh $SERVER $USER $PASSWD
 ```
 
